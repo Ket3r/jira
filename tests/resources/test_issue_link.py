@@ -1,9 +1,29 @@
 from __future__ import annotations
+import logging
+import pytest
 
 from tests.conftest import JiraTestCase
 
 
+class _FailOnWarningHandler(logging.Handler):
+    def emit(self, record):
+        if record.levelno >= logging.WARNING:
+            pytest.fail(f"Warning logged during test: {record.getMessage()}")
+
+
 class IssueLinkTests(JiraTestCase):
+    @pytest.fixture(autouse=True)
+    def fail_on_log_warning(self):
+        # Attach the custom handler to the root logger
+        logger = logging.getLogger()
+        handler = _FailOnWarningHandler()
+        logger.addHandler(handler)
+        try:
+            yield
+        finally:
+            # Make sure to remove the handler after the test
+            logger.removeHandler(handler)
+
     def setUp(self):
         JiraTestCase.setUp(self)
         self.link_types = self.test_manager.jira_admin.issue_link_types()
