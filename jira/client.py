@@ -2904,7 +2904,7 @@ class JIRA:
     @translate_resource_args
     def create_issue_link(
         self,
-        type: str | IssueLinkType,
+        type: str,
         inwardIssue: str,
         outwardIssue: str,
         comment: dict[str, Any] | None = None,
@@ -2912,7 +2912,7 @@ class JIRA:
         """Create a link between two issues.
 
         Args:
-            type (Union[str,IssueLinkType]): the type of link to create
+            type (str): name of the link's type to create
             inwardIssue: the issue to link from
             outwardIssue: the issue to link to
             comment (Optional[Dict[str, Any]]):  a comment to add to the issues with the link. Should be a dict containing ``body`` and
